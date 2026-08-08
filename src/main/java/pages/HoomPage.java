@@ -1,4 +1,24 @@
 package pages;
 
-public class HoomPage {
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
+
+public class HoomPage extends BasePage{
+    public HoomPage(WebDriver driver) {
+        setDriver(driver);
+        driver.get("https://telranedu.web.app/home");
+        PageFactory.initElements
+                (new AjaxElementLocatorFactory(driver, 10),
+                        this);
+    }
+
+    @FindBy(xpath = "//a[text() = 'LOGIN']")
+    WebElement btnLogin;
+
+    public void clickBtnlogin() {
+        btnLogin.click();
+    }
 }
