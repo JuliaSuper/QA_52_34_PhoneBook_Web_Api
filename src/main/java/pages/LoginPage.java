@@ -15,17 +15,17 @@ public class LoginPage extends BasePage {
     }
 
     @FindBy(xpath = "//form/input[1]")
-    WebElement imputEmail;
+    WebElement inputEmail;
     @FindBy(css = "input[placeholder='Password']")
-    WebElement imputPassword;
+    WebElement inputPassword;
     @FindBy(xpath = "//button[@type='submit' and @name='registration']")
     WebElement btnRegister;
     @FindBy(xpath = "//button[text()='Login']")
     WebElement btnLogin;
 
     public void typeLoginRegistrationForm(UserLombok user) {
-        imputEmail.sendKeys(user.getUsername());
-        imputPassword.sendKeys(user.getPassword());
+        inputEmail.sendKeys(user.getUsername());
+        inputPassword.sendKeys(user.getPassword());
     }
 
     public void clickBtnRegistration() {

@@ -8,6 +8,7 @@ import org.testng.annotations.BeforeMethod;
 
 public class AppManager {
     private WebDriver driver;
+
     public WebDriver getDriver() {
         return driver;
     }

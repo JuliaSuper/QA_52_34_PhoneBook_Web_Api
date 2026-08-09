@@ -1,12 +1,13 @@
 package pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 
-public class HoomPage extends BasePage{
+public class HoomPage extends BasePage {
     public HoomPage(WebDriver driver) {
         setDriver(driver);
         driver.get("https://telranedu.web.app/home");
@@ -17,8 +18,26 @@ public class HoomPage extends BasePage{
 
     @FindBy(xpath = "//a[text() = 'LOGIN']")
     WebElement btnLogin;
+    @FindBy(xpath = "//form/input[1]")
+    WebElement inputEmail;
 
-    public void clickBtnlogin() {
+    public void clickBtnLogin(){
         btnLogin.click();
     }
+
+    public void method(){
+        WebElement login = driver.findElement
+                (By.xpath("//a[text() = 'LOGIN']"));
+        login.click();
+        WebElement inputEmail = driver.findElement
+                (By.xpath("//form/input[1]"));
+        inputEmail.sendKeys("fgghjkj 3454D@nnn.ff");
+    }
+
+    public void ajaxMethod(){
+        btnLogin.click();
+        inputEmail.sendKeys("fgghjkj 3454D@nnn.ff");
+    }
 }
+
+
