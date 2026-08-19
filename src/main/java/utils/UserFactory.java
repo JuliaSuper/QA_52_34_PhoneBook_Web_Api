@@ -4,6 +4,8 @@ import dto.User;
 import dto.UserLombok;
 import net.datafaker.Faker;
 
+import static utils.PropertiesReader.getProperty;
+
 public class UserFactory {
     static Faker faker = new Faker();
 
@@ -19,7 +21,8 @@ public class UserFactory {
     public static UserLombok positiveUser() {
         UserLombok user = UserLombok.builder()
                 .username(faker.internet().emailAddress())
-                .password("Fdkop356$")
+                .password(getProperty("base.properties",
+                        "passwordPositiveUser"))
                 .build();
         return user;
     }

@@ -31,4 +31,12 @@ public class LoginPage extends BasePage {
     public void clickBtnRegistration() {
         btnRegister.click();
     }
+
+    public void clickBtnLogin() {
+        btnLogin.click();
+    }
+
+    public boolean isBtnLoginDisplayed() {
+        return btnLogin.isDisplayed();
+    }
 }
