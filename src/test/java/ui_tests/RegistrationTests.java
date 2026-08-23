@@ -14,8 +14,12 @@ import static utils.UserFactory.*;
 
 import java.util.Random;
 
+import static utils.PropertiesReader.getProperty;
+import static utils.UserFactory.positiveUser;
+
 public class RegistrationTests extends AppManager {
     LoginPage loginPage;
+
     @BeforeMethod
     public void goToRegistrationLoginPage() {
         new HomePage(getDriver()).clickBtnLogin();
@@ -85,6 +89,36 @@ public class RegistrationTests extends AppManager {
         Assert.assertTrue(loginPage.closeAlert()
                 .contains("Wrong email or password format"));
     }
+
+    @Test
+    public void registrationNegativeEmailWithoutAtTest() {
+        UserLombok user = UserLombok.builder()
+                .username(getProperty("base.properties","emailInvalid"))
+                .password(getProperty("base.properties","password"))
+                .build();
+
+        loginPage.typeLoginRegistrationForm(user);
+        loginPage.clickBtnRegistration();
+
+        Assert.assertTrue(loginPage.closeAlert().contains("Wrong email or password format"),
+                "Alert message when email lacks '@'");
+    }
+
+    @Test
+    public void registrationNegativeEmailWithoutDomainTest() {
+        UserLombok user = UserLombok.builder()
+                .username("invalid@.com")
+                .password(getProperty("base.properties","password"))
+                .build();
+
+        loginPage.typeLoginRegistrationForm(user);
+        loginPage.clickBtnRegistration();
+
+        Assert.assertTrue(loginPage.closeAlert().contains("Wrong email or password format"),
+                "Alert message when email domain is missing");
+    }
+
+
 
     @Test(dataProvider = "dataProviderWrongPasswordOrEmail",
             dataProviderClass = UserDataProvider.class)

@@ -2,6 +2,7 @@ package ui_tests;
 
 import dto.UserLombok;
 import manedger.AppManager;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -9,20 +10,23 @@ import pages.ContactsPage;
 import pages.HomePage;
 import pages.LoginPage;
 
-import static utils.PropertiesReader.getProperty;
+import static utils.PropertiesReader.*;
+import data_providers.UserDataProvider;
 
 public class LoginTests extends AppManager {
     LoginPage loginPage;
-    SoftAssert softAssert= new SoftAssert();
+    SoftAssert softAssert = new SoftAssert();
 
     @BeforeMethod
-    public void goToLoginPage(){
-        softAssert = new SoftAssert();
+    public void goToLoginPage() {
         new HomePage(getDriver()).clickBtnLogin();
         loginPage = new LoginPage(getDriver());
+
+
     }
+
     @Test
-    public void loginPositiveTests(){
+    public void loginPositiveTests() {
         UserLombok user = UserLombok.builder()
                 .username(getProperty("base.properties", "email"))
                 .password(getProperty("base.properties", "password"))
@@ -36,14 +40,14 @@ public class LoginTests extends AppManager {
 
         ContactsPage contactsPage = new ContactsPage(getDriver());
         softAssert.assertTrue(
-                contactsPage.validateTextInMessageNoContacts
-                        ("No Contacts here!"),
-                "A message came from the contact page");
+                contactsPage.isLinkContacktsDisplayed(),
+                "validate isLinkContacktsDisplayed");
+        softAssert.assertTrue(contactsPage.isUrlContactsText("contacts"), "validate url");
         softAssert.assertAll();
     }
 
     @Test
-    public void loginNegativeWrongPasswordTests(){
+    public void loginNegativeWrongPasswordTests() {
         UserLombok user = UserLombok.builder()
                 .username(getProperty("base.properties", "email"))
                 .password(getProperty("base.properties", "negativePassword"))
@@ -64,4 +68,92 @@ public class LoginTests extends AppManager {
         softAssert.assertAll();
     }
 
+    @Test
+    public void loginNegativeUnregisteredEmailTest() {
+        UserLombok user = UserLombok.builder()
+                .username(getProperty("base.properties", "emailUnregistered"))
+                .password(getProperty("base.properties", "passwordUnregistered"))
+                .build();
+
+        loginPage.typeLoginRegistrationForm(user);
+        loginPage.clickBtnLogin();
+
+        String alertText = loginPage.closeAlert();
+        Assert.assertTrue(alertText.contains("Wrong email or password"),
+                "Alert message for unregistered email");
+    }
+
+    @Test
+    public void loginNegativeAllFieldsEmptyWOTypeFormTests() {
+        loginPage.clickBtnLogin();
+//        Assert.assertTrue(loginPage.closeAlert().contains("Wrong email or password"));
+        Assert.assertEquals(loginPage.closeAlert(),
+                "Wrong email or password");
+
+    }
+
+    @Test
+    public void loginNegativeEmptyEmailTest() {
+        UserLombok user = UserLombok.builder()
+                .username("")
+                .password(getProperty("base.properties", "password"))
+                .build();
+
+        loginPage.typeLoginRegistrationForm(user);
+        loginPage.clickBtnLogin();
+
+        Assert.assertTrue(loginPage.closeAlert().contains("Wrong email or password"),
+                "Alert message when email is empty");
+    }
+
+    @Test
+    public void loginNegativeEmptyPasswordTest() {
+        UserLombok user = UserLombok.builder()
+                .username(getProperty("base.properties", "email"))
+                .password("")
+                .build();
+
+        loginPage.typeLoginRegistrationForm(user);
+        loginPage.clickBtnLogin();
+
+        Assert.assertTrue(loginPage.closeAlert().contains("Wrong email or password"),
+                "Alert message when password is empty");
+    }
+
+    @Test
+    public void loginNegativeInvalidEmailFormatWithoutAtTest() {
+        UserLombok user = UserLombok.builder()
+                .username(getProperty("base.properties", "emailInvalid"))
+                .password(getProperty("base.properties", "password"))
+                .build();
+
+        loginPage.typeLoginRegistrationForm(user);
+        loginPage.clickBtnLogin();
+
+        Assert.assertTrue(loginPage.closeAlert().contains("Wrong email or password"),
+                "Alert message when email has no '@'");
+    }
+
+    @Test
+    public void loginNegativeInvalidEmailFormatWithoutDomainTest() {
+        UserLombok user = UserLombok.builder()
+                .username(getProperty("base.properties", "invalidEmail"))
+                .password(getProperty("base.properties", "password"))
+                .build();
+
+        loginPage.typeLoginRegistrationForm(user);
+        loginPage.clickBtnLogin();
+
+        Assert.assertTrue(loginPage.closeAlert().contains("Wrong email or password"),
+                "Alert message when email has no domain");
+    }
+
+    @Test(dataProvider = "dataProviderWrongPasswordOrEmail", dataProviderClass = UserDataProvider.class)
+    public void loginNegativeWrongEmailOrPasswordFromCsvTest(UserLombok user) {
+        loginPage.typeLoginRegistrationForm(user);
+        loginPage.clickBtnLogin();
+
+        Assert.assertTrue(loginPage.closeAlert().contains("Wrong email or password"),
+                "Alert message for CSV data-driven invalid credentials");
+    }
 }
