@@ -7,33 +7,33 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 
-public class LoginPage extends BasePage {
-    public LoginPage(WebDriver driver) {
-        PageFactory.initElements
-                (new AjaxElementLocatorFactory(driver, 10),
-                        this);
+public class RegistrationPage extends BasePage {
+    public RegistrationPage(WebDriver driver) {
+        PageFactory.initElements(new AjaxElementLocatorFactory
+                (driver, 10), this);
     }
 
     @FindBy(xpath = "//form/input[1]")
     WebElement inputEmail;
-    @FindBy(css = "input[placeholder='Password']")
+    @FindBy(xpath = "//form/input[2]")
     WebElement inputPassword;
     @FindBy(xpath = "//button[@type='submit' and @name='registration']")
-    WebElement btnRegistration;
-    @FindBy(xpath = "//button[text()='Login']")
-    WebElement btnLogin;
+    WebElement btnRegister;
+
 
     public void typeLoginRegistrationForm(UserLombok user) {
+        inputEmail.clear();
         inputEmail.sendKeys(user.getUsername());
+        inputPassword.clear();
         inputPassword.sendKeys(user.getPassword());
     }
 
-
-    public void clickBtnLogin() {
-        btnLogin.click();
+    public void clickBtnRegistration() {
+        btnRegister.click();
     }
 
-    public boolean isBtnLoginDisplayed() {
-        return btnLogin.isDisplayed();
+    public boolean isBtnRegistrationDisplayed() {
+        return btnRegister.isDisplayed();
     }
 }
+

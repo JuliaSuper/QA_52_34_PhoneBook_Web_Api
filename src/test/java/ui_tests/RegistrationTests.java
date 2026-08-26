@@ -9,6 +9,7 @@ import pages.ContactsPage;
 import pages.HomePage;
 import pages.LoginPage;
 import data_providers.UserDataProvider;
+import pages.RegistrationPage;
 
 import static utils.UserFactory.*;
 
@@ -18,27 +19,26 @@ import static utils.PropertiesReader.getProperty;
 import static utils.UserFactory.positiveUser;
 
 public class RegistrationTests extends AppManager {
-    LoginPage loginPage;
+    RegistrationPage registrationPage;
 
     @BeforeMethod
     public void goToRegistrationLoginPage() {
+        logger.info("Start registration test");
         new HomePage(getDriver()).clickBtnLogin();
-        loginPage = new LoginPage(getDriver());
+        registrationPage = new RegistrationPage(getDriver());
     }
 
     @Test
-    public void registrationPositiveTests() {
+    public void registrationPositiveTest() {
         int i = new Random().nextInt(1000);
-        UserLombok user = UserLombok.builder().
-                username("vdgfc" + i + "@mail.ru")
-                .password("F236@hjk")
+        UserLombok user = UserLombok.builder()
+                .username("vbfgty" + i + "@fgrty.bh")
+                .password("Adfert23!")
                 .build();
-        loginPage.typeLoginRegistrationForm(user);
-        loginPage.clickBtnRegistration();
+        registrationPage.typeLoginRegistrationForm(user);
+       registrationPage.clickBtnRegistration();
         Assert.assertTrue(new ContactsPage(getDriver())
                 .validateTextInMessageNoContacts("No Contacts here!"));
-
-
     }
 
 //    @Test
@@ -56,17 +56,17 @@ public class RegistrationTests extends AppManager {
     public void registrationPositiveWithFakerTests() {
         UserLombok user = positiveUser();
         System.out.println(user);
-        LoginPage loginPage = new LoginPage(getDriver());
-        loginPage.typeLoginRegistrationForm(user);
-        loginPage.clickBtnRegistration();
+        RegistrationPage registrationPage = new RegistrationPage(getDriver());
+        registrationPage.typeLoginRegistrationForm(user);
+        registrationPage.clickBtnRegistration();
         Assert.assertTrue(new ContactsPage(getDriver())
                 .validateTextInMessageNoContacts("No Contacts here!"));
     }
 
     @Test
     public void registrationNegativeEmptyAllFieldsTests() {
-        loginPage.clickBtnRegistration();
-        Assert.assertTrue(loginPage.closeAlert()
+        registrationPage.clickBtnRegistration();
+        Assert.assertTrue(registrationPage.closeAlert()
                 .contains("Wrong email or password format"));
     }
 
@@ -74,9 +74,9 @@ public class RegistrationTests extends AppManager {
     public void registrationNegativeEmptyEmailFieldTests() {
         UserLombok user = positiveUser();
         user.setUsername("");
-        loginPage.typeLoginRegistrationForm(user);
-        loginPage.clickBtnRegistration();
-        Assert.assertTrue(loginPage.closeAlert()
+        registrationPage.typeLoginRegistrationForm(user);
+        registrationPage.clickBtnRegistration();
+        Assert.assertTrue(registrationPage.closeAlert()
                 .contains("Wrong email or password format"));
     }
 
@@ -84,9 +84,9 @@ public class RegistrationTests extends AppManager {
     public void registrationNegativeEmptyPasswordFieldTests() {
         UserLombok user = positiveUser();
         user.setPassword("");
-        loginPage.typeLoginRegistrationForm(user);
-        loginPage.clickBtnRegistration();
-        Assert.assertTrue(loginPage.closeAlert()
+        registrationPage.typeLoginRegistrationForm(user);
+        registrationPage.clickBtnRegistration();
+        Assert.assertTrue(registrationPage.closeAlert()
                 .contains("Wrong email or password format"));
     }
 
@@ -97,10 +97,10 @@ public class RegistrationTests extends AppManager {
                 .password(getProperty("base.properties","password"))
                 .build();
 
-        loginPage.typeLoginRegistrationForm(user);
-        loginPage.clickBtnRegistration();
+        registrationPage.typeLoginRegistrationForm(user);
+        registrationPage.clickBtnRegistration();
 
-        Assert.assertTrue(loginPage.closeAlert().contains("Wrong email or password format"),
+        Assert.assertTrue(registrationPage.closeAlert().contains("Wrong email or password format"),
                 "Alert message when email lacks '@'");
     }
 
@@ -111,10 +111,10 @@ public class RegistrationTests extends AppManager {
                 .password(getProperty("base.properties","password"))
                 .build();
 
-        loginPage.typeLoginRegistrationForm(user);
-        loginPage.clickBtnRegistration();
+        registrationPage.typeLoginRegistrationForm(user);
+        registrationPage.clickBtnRegistration();
 
-        Assert.assertTrue(loginPage.closeAlert().contains("Wrong email or password format"),
+        Assert.assertTrue(registrationPage.closeAlert().contains("Wrong email or password format"),
                 "Alert message when email domain is missing");
     }
 
@@ -123,9 +123,18 @@ public class RegistrationTests extends AppManager {
     @Test(dataProvider = "dataProviderWrongPasswordOrEmail",
             dataProviderClass = UserDataProvider.class)
     public void registrationNegativeWrongPasswordTests(UserLombok user) {
-        loginPage.typeLoginRegistrationForm(user);
-        loginPage.clickBtnRegistration();
-        Assert.assertTrue(loginPage.closeAlert()
+        registrationPage.typeLoginRegistrationForm(user);
+        registrationPage.clickBtnRegistration();
+        Assert.assertTrue(registrationPage.closeAlert()
+                .contains("Wrong email or password format"));
+    }
+
+    @Test(dataProvider = "dataProviderWrongEmailRegistration",
+            dataProviderClass = UserDataProvider.class)
+    public void registrationNegativeWrongEmailTests(UserLombok user) {
+        registrationPage.typeLoginRegistrationForm(user);
+        registrationPage.clickBtnRegistration();
+        Assert.assertTrue(registrationPage.closeAlert()
                 .contains("Wrong email or password format"));
     }
 }

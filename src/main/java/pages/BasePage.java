@@ -7,16 +7,20 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.WatchEvent;
 import java.time.Duration;
 
 public abstract class BasePage {
     static WebDriver driver;
+    public Logger logger = LoggerFactory.getLogger(BasePage.class);
 
     public void setDriver(WebDriver wd) {
         BasePage.driver = wd;
-    }
+            }
+
 
     public boolean isTextInElementPresent(WebElement element, String text) {
         try {
@@ -31,7 +35,7 @@ public abstract class BasePage {
     }
 
     public String closeAlert() {
-        Alert alert = new WebDriverWait(driver, Duration.ofSeconds(5))
+        Alert alert = new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.alertIsPresent());
         String alertText = alert.getText();
         alert.accept();

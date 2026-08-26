@@ -33,4 +33,26 @@ public class UserDataProvider {
         }
         return list.iterator();
     }
+
+    @DataProvider
+    public Iterator<UserLombok> dataProviderWrongEmailRegistration() {
+        List<UserLombok> list = new ArrayList<>();
+        try (BufferedReader bufferedReader = new BufferedReader
+                (new FileReader("src/test/resources" +
+                        "/Wrong_email_registration.csv"))) {
+            String line = bufferedReader.readLine();
+            while (line != null) {
+                String[] sprintLine = line.split(",");
+                list.add(UserLombok.builder()
+                        .username(sprintLine[0])
+                        .password(sprintLine[1])
+                        .build());
+                line = bufferedReader.readLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("created exception");
+        }
+        return list.iterator();
+    }
 }
