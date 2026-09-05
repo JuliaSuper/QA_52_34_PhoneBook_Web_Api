@@ -4,6 +4,7 @@ import dto.UserLombok;
 import manedger.AppManager;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import pages.ContactsPage;
@@ -12,6 +13,9 @@ import pages.LoginPage;
 
 import static utils.PropertiesReader.*;
 import data_providers.UserDataProvider;
+import utils.TestNGListener;
+
+@Listeners(TestNGListener.class)
 
 public class LoginTests extends AppManager {
     LoginPage loginPage;

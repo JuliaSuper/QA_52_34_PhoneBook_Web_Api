@@ -4,12 +4,14 @@ import dto.UserLombok;
 import manedger.AppManager;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import pages.ContactsPage;
 import pages.HomePage;
 import pages.LoginPage;
 import data_providers.UserDataProvider;
 import pages.RegistrationPage;
+import utils.TestNGListener;
 
 import static utils.UserFactory.*;
 
@@ -17,6 +19,8 @@ import java.util.Random;
 
 import static utils.PropertiesReader.getProperty;
 import static utils.UserFactory.positiveUser;
+
+@Listeners(TestNGListener.class)
 
 public class RegistrationTests extends AppManager {
     RegistrationPage registrationPage;
