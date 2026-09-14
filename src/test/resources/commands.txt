@@ -1,0 +1,4 @@
+./gradlew clean
+./gradlew clean test
+./gradlew clean qa
+./gradlew clean scope

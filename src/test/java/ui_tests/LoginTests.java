@@ -29,7 +29,7 @@ public class LoginTests extends AppManager {
 
     }
 
-    @Test
+    @Test(groups = "smoke")
     public void loginPositiveTests() {
         UserLombok user = UserLombok.builder()
                 .username(getProperty("base.properties", "email"))
@@ -45,7 +45,7 @@ public class LoginTests extends AppManager {
         ContactsPage contactsPage = new ContactsPage(getDriver());
         softAssert.assertTrue(
                 contactsPage.isLinkContacktsDisplayed(),
-                "validate isLinkContacktsDisplayed");
+                "validate isLinkContactsDisplayed");
         softAssert.assertTrue(contactsPage.isUrlContactsText("contacts"), "validate url");
         softAssert.assertAll();
     }

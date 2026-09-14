@@ -32,7 +32,7 @@ public class RegistrationTests extends AppManager {
         registrationPage = new RegistrationPage(getDriver());
     }
 
-    @Test
+    @Test(groups = "smoke")
     public void registrationPositiveTest() {
         int i = new Random().nextInt(1000);
         UserLombok user = UserLombok.builder()
