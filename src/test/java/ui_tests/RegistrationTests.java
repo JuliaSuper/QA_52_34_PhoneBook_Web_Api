@@ -25,7 +25,7 @@ import static utils.UserFactory.positiveUser;
 public class RegistrationTests extends AppManager {
     RegistrationPage registrationPage;
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void goToRegistrationLoginPage() {
         logger.info("Start registration test");
         new HomePage(getDriver()).clickBtnLogin();

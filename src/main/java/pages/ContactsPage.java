@@ -21,7 +21,7 @@ public class ContactsPage extends BasePage{
         return isTextInElementPresent(messageNoContacts, text) ;
     }
 
-    public boolean isLinkContacktsDisplayed(){
+    public boolean isLinkContactsDisplayed(){
         return linkContacts.isDisplayed();
 
     }

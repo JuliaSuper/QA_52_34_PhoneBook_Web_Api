@@ -9,8 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class UserLombok {
-    private String username;
-    private String password;
+public class ResponseMessageDto {
+    private String message;
 }
-

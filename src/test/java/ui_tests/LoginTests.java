@@ -21,7 +21,7 @@ public class LoginTests extends AppManager {
     LoginPage loginPage;
     SoftAssert softAssert = new SoftAssert();
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void goToLoginPage() {
         new HomePage(getDriver()).clickBtnLogin();
         loginPage = new LoginPage(getDriver());
@@ -44,7 +44,7 @@ public class LoginTests extends AppManager {
 
         ContactsPage contactsPage = new ContactsPage(getDriver());
         softAssert.assertTrue(
-                contactsPage.isLinkContacktsDisplayed(),
+                contactsPage.isLinkContactsDisplayed(),
                 "validate isLinkContactsDisplayed");
         softAssert.assertTrue(contactsPage.isUrlContactsText("contacts"), "validate url");
         softAssert.assertAll();
