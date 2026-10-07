@@ -35,7 +35,7 @@ public class AddContactApiTests implements BaseApi, ILogin {
         System.out.println(tokenDto.getToken());
         RequestBody requestBody = RequestBody.create(GSON.toJson(contact), JSON);
         Request request = new Request.Builder()
-                .url(BASE_URL+ADD_CONTACT)
+                .url(BASE_URL+ PUT_CONTACT)
                 .addHeader(AUTH, tokenDto.getToken())
                 .post(requestBody)
                 .build();
@@ -55,7 +55,7 @@ public class AddContactApiTests implements BaseApi, ILogin {
         System.out.println(tokenDto.getToken());
         RequestBody requestBody = RequestBody.create(GSON.toJson(contact), JSON);
         Request request = new Request.Builder()
-                .url(BASE_URL+ADD_CONTACT)
+                .url(BASE_URL+ PUT_CONTACT)
                 .addHeader(AUTH, tokenDto.getToken())
                 .post(requestBody)
                 .build();
@@ -107,7 +107,7 @@ public class AddContactApiTests implements BaseApi, ILogin {
 
         RequestBody requestBody = RequestBody.create(brokenContactJson, JSON);
         Request request = new Request.Builder()
-                .url(BASE_URL + ADD_CONTACT)
+                .url(BASE_URL + PUT_CONTACT)
                 .addHeader(AUTH, token)
                 .post(requestBody)
                 .build();
@@ -134,7 +134,7 @@ public class AddContactApiTests implements BaseApi, ILogin {
 
         RequestBody requestBody = RequestBody.create(contactJson, JSON);
         Request request = new Request.Builder()
-                .url(BASE_URL + ADD_CONTACT)
+                .url(BASE_URL + PUT_CONTACT)
                 .addHeader(AUTH, invalidToken)
                 .post(requestBody)
                 .build();
@@ -150,8 +150,8 @@ public class AddContactApiTests implements BaseApi, ILogin {
     @Test
     public void getAllContactsNegative_403_Test() {
         Request request = new Request.Builder()
-                .url(BASE_URL + ADD_CONTACT)
-                .addHeader(AUTH, "") // Пустой заголовок
+                .url(BASE_URL + PUT_CONTACT)
+                .addHeader(AUTH, "")
                 .get()
                 .build();
 
@@ -161,5 +161,44 @@ public class AddContactApiTests implements BaseApi, ILogin {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    public  void addNewContactWrongTokenNegativeTest(){
+        ContactDto contact = positiveContact();
+        System.out.println(contact);
+        System.out.println(tokenDto.getToken());
+        RequestBody requestBody = RequestBody.create(GSON.toJson(contact), JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL+ PUT_CONTACT)
+                .addHeader(AUTH, "tokenDto.getToken()")
+                .post(requestBody)
+                .build();
+        Response response;
+        try {
+            response = OK_HTTP_CLIENT.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Assert.assertEquals(response.code(),401);
+    }
+    @Test
+    public  void addNewContactWOTokenNegativeTest(){
+        ContactDto contact = positiveContact();
+        System.out.println(contact);
+        System.out.println(tokenDto.getToken());
+        RequestBody requestBody = RequestBody.create(GSON.toJson(contact), JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL+ PUT_CONTACT)
+
+                .post(requestBody)
+                .build();
+        Response response;
+        try {
+            response = OK_HTTP_CLIENT.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Assert.assertEquals(response.code(),403);
     }
 }
