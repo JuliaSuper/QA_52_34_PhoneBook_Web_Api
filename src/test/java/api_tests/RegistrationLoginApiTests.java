@@ -124,4 +124,64 @@ public class RegistrationLoginApiTests implements BaseApi {
         System.out.println(response);
         Assert.assertEquals(response.code(), 401);
     }
+
+    @Test
+    public void loginApiWrongLoginNegativeTest(){
+        UserLombok user = UserLombok.builder()
+                .username(getProperty("base.properties", "emailInvalid"))
+                .password(getProperty("base.properties", "password"))
+                .build();
+        RequestBody requestBody = RequestBody.create(GSON.toJson(user),JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL+LOGIN_URL)
+                .post(requestBody)
+                .build();
+        Response response;
+        try {
+            response = OK_HTTP_CLIENT.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(response);
+        Assert.assertEquals(response.code(), 401);
+    }
+
+    @Test
+    public void loginApiWrongFormatNegativeTest(){
+        UserLombok user = UserLombok.builder()
+                .username(null)
+                .password(null)
+                .build();
+        RequestBody requestBody = RequestBody.create(GSON.toJson(user),JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL+LOGIN_URL)
+                .post(requestBody)
+                .build();
+        Response response;
+        try {
+            response = OK_HTTP_CLIENT.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(response);
+        Assert.assertEquals(response.code(), 401);
+    }
+
+    @Test
+    public void loginApiNegative_401_Test(){
+        String emptyJson = "{}";
+        RequestBody requestBody = RequestBody.create(emptyJson,JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL+LOGIN_URL)
+                .post(requestBody)
+                .build();
+        Response response;
+        try {
+            response = OK_HTTP_CLIENT.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(response);
+        Assert.assertEquals(response.code(), 401);
+    }
 }
