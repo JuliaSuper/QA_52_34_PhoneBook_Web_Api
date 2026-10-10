@@ -11,6 +11,7 @@ public interface BaseApi {
     String LOGIN_URL = "/v1/user/login/usernamepassword";
     String PUT_CONTACT = "/v1/contacts";
     String GET_ALL_CONTACT = "/v1/contacts";
+    String ADD_CONTACT_URL = "/v1/contacts";
 
     MediaType JSON = MediaType.get("application/json");
     MediaType TEXT = MediaType.get("text/plain");
