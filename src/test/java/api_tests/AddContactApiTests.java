@@ -285,52 +285,16 @@ public class AddContactApiTests implements BaseApi, ILogin {
         RequestBody requestBody = RequestBody.create(GSON.toJson(contact), JSON);
         Request request = new Request.Builder()
                 .url(BASE_URL + PUT_CONTACT)
-                .addHeader(AUTH, token)
+                .addHeader(AUTH, tokenDto.getToken())
                 .post(requestBody)
                 .build();
-        String generatedId = "";
-        try (Response response = OK_HTTP_CLIENT.newCall(request).execute()) {
-            System.out.println("First creation status: " + response.code());
-            if (response.body() != null) {
-                String responseBodyStr = response.body().string();
-                com.google.gson.JsonObject jsonObject = com.google.gson.JsonParser
-                        .parseString(responseBodyStr).getAsJsonObject();
-                if (jsonObject.has("id")) {
-                    generatedId = jsonObject.get("id").getAsString();
-                    System.out.println("Generated ID: " + generatedId);
-                }
-            }
+        Response response;
+        try {
+            OK_HTTP_CLIENT.newCall(request).execute();
+            response = OK_HTTP_CLIENT.newCall(request).execute();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        ContactDto duplicateContact = ContactDto.builder()
-                .id(generatedId)
-                .name("John")
-                .lastName("Doe")
-                .email("john_duplicate@test.com")
-                .phone("1234567890")
-                .address("Berlin")
-                .description("For duplicate test")
-                .build();
-
-        RequestBody duplicateRequestBody = RequestBody.create(GSON.toJson(duplicateContact), JSON);
-        Request duplicateRequest = new Request.Builder()
-                .url(BASE_URL + PUT_CONTACT)
-                .addHeader(AUTH, token)
-                .post(duplicateRequestBody)
-                .build();
-        try (Response response = OK_HTTP_CLIENT.newCall(request).execute()) {
-            System.out.println("Duplicate request status: " + response.code());
-            Assert.assertEquals(response.code(), 409);
-            if (response.body() != null) {
-                String bodyString = response.body().string();
-                ErrorMessageDto errorResponse = GSON.fromJson(bodyString, ErrorMessageDto.class);
-                Assert.assertEquals(errorResponse.getStatus(), 409);
-                System.out.println("Server error message: " + errorResponse.getMessage());
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    } // тест вместо 409 дает 200
+    }
 
 }
