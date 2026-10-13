@@ -79,6 +79,100 @@ public class AddContactApiTests implements BaseApi, ILogin {
     }
 
     @Test
+    public void addNewContactWrongTokenNegativeTest() {
+        ContactDto contact = positiveContact();
+        System.out.println(contact);
+        System.out.println(tokenDto.getToken());
+        RequestBody requestBody = RequestBody.create(GSON.toJson(contact), JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL + PUT_CONTACT)
+                .addHeader(AUTH, "tokenDto.getToken()")
+                .post(requestBody)
+                .build();
+        Response response;
+        try {
+            response = OK_HTTP_CLIENT.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Assert.assertEquals(response.code(), 401);
+    }
+
+    @Test
+    public void addNewContactWOTokenNegativeTest() {
+        ContactDto contact = positiveContact();
+        System.out.println(contact);
+        System.out.println(tokenDto.getToken());
+        RequestBody requestBody = RequestBody.create(GSON.toJson(contact), JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL + PUT_CONTACT)
+
+                .post(requestBody)
+                .build();
+        Response response;
+        try {
+            response = OK_HTTP_CLIENT.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Assert.assertEquals(response.code(), 403);
+    }
+
+    @Test
+    public void addNewContactEmptyTokenNegativeTest() {
+        ContactDto contact = positiveContact();
+        System.out.println(tokenDto.getToken());
+        RequestBody requestBody = RequestBody.create(GSON.toJson(contact), JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL + ADD_CONTACT)
+                .addHeader(AUTH, "")
+                .post(requestBody)
+                .build();
+        Response response;
+        try {
+            response = OK_HTTP_CLIENT.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Assert.assertEquals(response.code(), 403);
+    }
+
+    @Test(dataProvider = "dataProviderWrongContact",
+            dataProviderClass = ContactDataProvider.class)
+    public void anyFormatErrorNegativeWrongContact_400_Test(ContactDto contactDto) {
+        ContactDto contact = positiveContact();
+        System.out.println(contact);
+        System.out.println(tokenDto.getToken());
+        RequestBody requestBody = RequestBody.create(GSON.toJson(contact), JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL + PUT_CONTACT)
+                .addHeader(AUTH, tokenDto.getToken())
+                .post(requestBody)
+                .build();
+        Response response;
+        try {
+            response = OK_HTTP_CLIENT.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        String brokenContactJson = GSON.toJson(contactDto);
+
+        RequestBody requestBody = RequestBody.create(brokenContactJson, JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL + PUT_CONTACT)
+                .addHeader(AUTH, token)
+                .post(requestBody)
+                .build();
+
+        try (Response response = OK_HTTP_CLIENT.newCall(request).execute()) {
+            System.out.println("Response code: " + response.code());
+            Assert.assertEquals(response.code(), 400);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+//
+//    @Test
     public void addContactNegative_400_Test() {
         UserLombok user = UserLombok.builder()
                 .username(getProperty("base.properties", "email"))
@@ -165,87 +259,11 @@ public class AddContactApiTests implements BaseApi, ILogin {
         }
     }
 
-    @Test
-    public void addNewContactWrongTokenNegativeTest() {
-        ContactDto contact = positiveContact();
-        System.out.println(contact);
-        System.out.println(tokenDto.getToken());
-        RequestBody requestBody = RequestBody.create(GSON.toJson(contact), JSON);
-        Request request = new Request.Builder()
-                .url(BASE_URL + PUT_CONTACT)
-                .addHeader(AUTH, "tokenDto.getToken()")
-                .post(requestBody)
-                .build();
-        Response response;
-        try {
-            response = OK_HTTP_CLIENT.newCall(request).execute();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Assert.assertEquals(response.code(), 401);
-    }
 
-    @Test
-    public void addNewContactWOTokenNegativeTest() {
-        ContactDto contact = positiveContact();
-        System.out.println(contact);
-        System.out.println(tokenDto.getToken());
-        RequestBody requestBody = RequestBody.create(GSON.toJson(contact), JSON);
-        Request request = new Request.Builder()
-                .url(BASE_URL + PUT_CONTACT)
 
-                .post(requestBody)
-                .build();
-        Response response;
-        try {
-            response = OK_HTTP_CLIENT.newCall(request).execute();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Assert.assertEquals(response.code(), 403);
-    }
-    @Test(dataProvider = "dataProviderWrongContact",
-            dataProviderClass = ContactDataProvider.class)
-    public void registrationNegativeWrongContact_400_Test(ContactDto contactDto) {
-        UserLombok user = UserLombok.builder()
-                .username(getProperty("base.properties", "email"))
-                .password(getProperty("base.properties", "password"))
-                .build();
 
-        RequestBody loginBody = RequestBody.create(GSON.toJson(user), JSON);
-        Request loginRequest = new Request.Builder()
-                .url(BASE_URL + LOGIN_URL)
-                .post(loginBody)
-                .build();
 
-        String token = "";
-        try (Response response = OK_HTTP_CLIENT.newCall(loginRequest).execute()) {
-            if (response.body() != null) {
-                com.google.gson.JsonObject jsonObject = com.google.gson.JsonParser
-                        .parseString(response.body().string())
-                        .getAsJsonObject();
 
-                token = jsonObject.get("token").getAsString();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        String brokenContactJson = GSON.toJson(contactDto);
-
-        RequestBody requestBody = RequestBody.create(brokenContactJson, JSON);
-        Request request = new Request.Builder()
-                .url(BASE_URL + PUT_CONTACT)
-                .addHeader(AUTH, token)
-                .post(requestBody)
-                .build();
-
-        try (Response response = OK_HTTP_CLIENT.newCall(request).execute()) {
-            System.out.println("Response code: " + response.code());
-            Assert.assertEquals(response.code(), 400);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Test
     public void registrationDuplicateContact_409_Tests() {
